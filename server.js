@@ -5,10 +5,10 @@ dotenv.config();
 
 const { MONGO_URL, PORT = 3000 } = process.env;
 
-mongoose.set("strictQuery", true);
+mongoose.set("useFindAndModify", false);
 
 mongoose
-  .connect(MONGO_URL)
+  .connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     app.listen(PORT, () => {
       console.log("Database connect successfully");
