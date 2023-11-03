@@ -12,53 +12,29 @@ const contactSchema = new Schema(
       unique: true,
       min: 3,
     },
-    email: {
+    number: {
       type: String,
-      required: [true, "Set e-mail address for a contact"],
+      required: [true, "Set number for a contact"],
       unique: true,
-    },
-    phone: {
-      type: String,
-      match: phoneRegexp,
-      required: [true, "Set phone number for a contact"],
-      unique: true,
-    },
-    favorite: {
-      type: Boolean,
-      default: false,
-    },
-    owner: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
-      required: true,
     },
   },
   { versionKey: false, timestamps: true },
 );
 
-contactSchema.post("save", handleSchemaValidationErrors);
+// contactSchema.post("save", handleSchemaValidationErrors);
 
 const addSchema = Joi.object({
   name: Joi.string().min(3).max(30).required(),
 
-  email: Joi.string()
-    .email({
-      minDomainSegments: 2,
-      tlds: { allow: ["com", "net"] },
-    })
-    .required(),
-
-  phone: Joi.string().pattern(phoneRegexp).required(),
-  favorite: Joi.boolean(),
+  number: Joi.string().min(3).max(30).required(),
 });
 
-const updateFavoriteSchema = Joi.object({
-  favorite: Joi.boolean().required(),
-});
+// const updateFavoriteSchema = Joi.object({
+//   favorite: Joi.boolean().required(),
+// });
 
 const schemas = {
   addSchema,
-  updateFavoriteSchema,
 };
 
 const Contact = model("contact", contactSchema);
