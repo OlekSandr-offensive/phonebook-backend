@@ -17,15 +17,19 @@ const contactSchema = new Schema(
       required: [true, "Set number for a contact"],
       unique: true,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
   },
   { versionKey: false, timestamps: true },
 );
 
-// contactSchema.post("save", handleSchemaValidationErrors);
+contactSchema.post("save", handleSchemaValidationErrors);
 
 const addSchema = Joi.object({
   name: Joi.string().min(3).max(30).required(),
-
   number: Joi.string().min(3).max(30).required(),
 });
 
