@@ -12,8 +12,9 @@ const contactSchema = new Schema(
       unique: true,
       min: 3,
     },
-    number: {
+    phone: {
       type: String,
+      match: phoneRegexp,
       required: [true, "Set number for a contact"],
       unique: true,
     },
@@ -30,7 +31,7 @@ contactSchema.post("save", handleSchemaValidationErrors);
 
 const addSchema = Joi.object({
   name: Joi.string().min(3).max(30).required(),
-  number: Joi.string().min(3).max(30).required(),
+  phone: Joi.string().pattern(phoneRegexp).required(),
 });
 
 // const updateFavoriteSchema = Joi.object({
