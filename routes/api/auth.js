@@ -11,7 +11,7 @@ const { ctrlWrapper } = require("../../helpers");
 const router = express.Router();
 
 router.post(
-  "/register",
+  "/signup",
   validationBody(schemas.registerSchema),
   ctrlWrapper(ctrl.register),
 );

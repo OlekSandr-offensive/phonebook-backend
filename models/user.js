@@ -28,9 +28,13 @@ const userSchema = new Schema(
       enum: ["starter", "pro", "business"],
       default: "starter",
     },
-    avatarURL: {
+    profile_img: {
       type: String,
       required: true,
+    },
+    cloudinary_id: {
+      type: String,
+      default: null,
     },
     token: {
       type: String,
@@ -52,7 +56,10 @@ const registerSchema = Joi.object({
     .pattern(emailRegexp)
     .required(),
   password: Joi.string().min(6).required(),
-  repeat_password: Joi.ref("password"),
+  repeat_password: Joi.string().required().messages({
+    "any.required": "must match password.",
+    "string.empty": "must match password.",
+  }),
 });
 
 const loginSchema = Joi.object({

@@ -1,28 +1,44 @@
 const fs = require("fs").promises;
-const path = require("path");
-const jimp = require("jimp");
+const cloudinary = require("../../helpers/cloudinary");
 
 const { User } = require("../../models/user");
 
-const avatarsDir = path.join(__dirname, "../../", "public", "avatars");
-
 const updateAvatar = async (req, res) => {
+  const tempFilePath = req.file.path;
+  const { _id } = req.user;
   try {
-    const { path: tempUpload, filename } = req.file;
-    const { _id } = req.user;
-    const [extention] = filename.split(".").reverse();
-    const avatarName = `${_id}.${extention}`;
-    const resultUpload = path.join(avatarsDir, avatarName);
-    await fs.rename(tempUpload, resultUpload);
-    const file = await jimp.read(resultUpload);
-    file.resize(250, 250).write(resultUpload);
-    const avatarURL = path.join("avatars", resultUpload);
-    await User.findByIdAndUpdate(_id, { avatarURL });
-    res.json({
-      avatarURL,
+    const { secure_url, public_id } = await cloudinary.uploader.upload(
+      tempFilePath,
+      {
+        folder: "avatars",
+        resource_type: "image",
+        transformation: [
+          { aspect_ratio: "1.0", width: 250, crop: "fill" },
+          { radius: "max" },
+          { fetch_format: "auto" },
+        ],
+      },
+    );
+
+    const oldAvatar = await User.findById(_id);
+    await cloudinary.uploader.destroy(oldAvatar.cloudinary_id);
+    await User.findByIdAndUpdate(_id, {
+      profile_img: secure_url,
+      cloudinary_id: public_id,
+    });
+    await fs.unlink(tempFilePath);
+    res.status(201).json({
+      status: "success",
+      code: 201,
+      data: {
+        user: {
+          profile_img: secure_url,
+          cloudinary_id: public_id,
+        },
+      },
     });
   } catch (error) {
-    await fs.unlink(req.file.path);
+    await fs.unlink(tempFilePath);
     throw error;
   }
 };
