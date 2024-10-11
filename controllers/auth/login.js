@@ -33,6 +33,9 @@ const login = async (req, res) => {
         name: user.name,
         email: user.email,
         subscription: user.subscription,
+        profile_img: user.profile_img,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       },
     },
   });
