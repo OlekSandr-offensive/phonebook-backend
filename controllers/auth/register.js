@@ -12,12 +12,12 @@ const register = async (req, res) => {
     throw RequestError(409, `User with ${email} already exists`);
   }
   const hashPassword = await bcrypt.hash(password, 10);
-  const avatarURL = gravatar.url(email, { d: "mp" });
+  const profile_img = gravatar.url(email, { d: "mp" });
   const result = await User.create({
     name,
     email,
     password: hashPassword,
-    profile_img: avatarURL,
+    profile_img,
   });
   res.status(201).json({
     status: "success",
