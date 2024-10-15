@@ -1,15 +1,16 @@
 const app = require("./app");
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+dotenv.config();
 
-const { MONGO_URL } = process.env;
-const port = process.env.PORT || 4000;
+const { MONGO_URL, PORT } = process.env;
 
 mongoose.set("strictQuery", true);
 
 mongoose
   .connect(MONGO_URL)
   .then(() => {
-    app.listen(port, () => {
+    app.listen(PORT, () => {
       console.log("Database connect successfully");
     });
   })
