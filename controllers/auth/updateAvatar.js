@@ -7,6 +7,12 @@ const updateAvatar = async (req, res) => {
   const tempFilePath = req.file.path;
   const { _id } = req.user;
   try {
+    const oldAvatar = await User.findById(_id);
+
+    if (oldAvatar.cloudinary_id) {
+      await cloudinary.uploader.destroy(oldAvatar.cloudinary_id);
+    }
+
     const { secure_url, public_id } = await cloudinary.uploader.upload(
       tempFilePath,
       {
@@ -19,9 +25,6 @@ const updateAvatar = async (req, res) => {
         ],
       },
     );
-
-    const oldAvatar = await User.findById(_id);
-    await cloudinary.uploader.destroy(oldAvatar.cloudinary_id);
     await User.findByIdAndUpdate(_id, {
       profile_img: secure_url,
       cloudinary_id: public_id,
