@@ -18,14 +18,21 @@ const getCurrent = async (req, res) => {
   const { _id: owner } = req.user;
   const result = await Contact.find({ owner }, "-createdAt -updatedAt");
 
-  res.json({
-    name: user.name,
-    email: user.email,
-    subscription: user.subscription,
-    profile_img: user.profile_img,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
-    result: result,
+  res.status(200).json({
+    status: "success",
+    code: 201,
+    data: {
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        subscription: user.subscription,
+        profile_img: user.profile_img,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        result: result,
+      },
+    },
   });
 };
 
