@@ -10,14 +10,12 @@ const contactSchema = new Schema(
     name: {
       type: String,
       required: [true, "Set name for a contact"],
-      unique: true,
       min: 3,
     },
     phone: {
       type: String,
       match: phoneRegexp,
       required: [true, "Set number for a contact"],
-      unique: true,
     },
     owner: {
       type: Schema.Types.ObjectId,
