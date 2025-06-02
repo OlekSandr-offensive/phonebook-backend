@@ -7,9 +7,16 @@ const { RequestError } = require("../../helpers");
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
-  const user = await User.findOne({ email });
+  const user = await User.findOne({
+    $or: [{ email }, { name }]
+  });
   if (user) {
-    throw RequestError(409, `User with ${email} already exists`);
+    if (user.email === email) {
+      throw RequestError(409, `User with email ${email} already exists`);
+    }
+    if (user.name === name) {
+      throw RequestError(409, `User with name ${name} already exists`);
+    }
   }
   const hashPassword = await bcrypt.hash(password, 10);
   const profile_img = gravatar.url(email, { d: "mp" });
